@@ -9,12 +9,11 @@
 #include "controller_manager_msgs/ListControllers.h"
 #include  <math.h>
 // #include <Eigen/Dense>
-// #include "vel_pass.h"
+
 #define PI 3.14159
-#define thetaConst 1.5708
 
 using namespace std;
-void solveTemp(double theta[],double w[],double v[]){
+void planOnce(double theta[],double w[],double v[]){
 double a1 = theta[0], a2 = theta[1], a3 = theta[2], a4 = theta[3], a5 = theta[4], a6 = theta[5];
 double v1 = v[0], v2 = v[1], v3 = v[2], v4 = v[3], v5 = v[4], v6 = v[5];
 w[0] = (10000*v2*cos(a1))/(2289*cos(a2 + a3) - 2250*sin(a2)) - (10000*v1*sin(a1))/(2289*cos(a2 + a3) - 2250*sin(a2)) - (v6*(550*cos(a2)*cos(a3)*sin(a5) - 550*sin(a2)*sin(a3)*sin(a5) + 550*cos(a2)*cos(a4)*cos(a5)*sin(a3) + 550*cos(a3)*cos(a4)*cos(a5)*sin(a2)))/(2289*cos(a2 + a3) - 2250*sin(a2)) + (550*v4*cos(a1)*(cos(a2)*sin(a3)*sin(a5) + cos(a3)*sin(a2)*sin(a5) - cos(a2)*cos(a3)*cos(a4)*cos(a5) + cos(a4)*cos(a5)*sin(a2)*sin(a3)))/(2289*cos(a2 + a3) - 2250*sin(a2)) + (550*v5*sin(a1)*(cos(a2)*sin(a3)*sin(a5) + cos(a3)*sin(a2)*sin(a5) - cos(a2)*cos(a3)*cos(a4)*cos(a5) + cos(a4)*cos(a5)*sin(a2)*sin(a3)))/(2289*cos(a2 + a3) - 2250*sin(a2));
@@ -32,40 +31,8 @@ w[4] = (v1*(7500000*cos(a1)*pow(cos(a2),2)*cos(a4) - 7500000*cos(a1)*cos(a4) - 7
 w[5] = (v6*(412500*cos(a5) - 412500*pow(cos(a2),2)*cos(a5) + 1746507*pow(cos(a3),3)*cos(a4) - 412500*pow(cos(a4),2)*cos(a5) - 1746507*cos(a3)*cos(a4) + 419650*cos(a5)*sin(a3) + 1746507*pow(cos(a2),2)*cos(a3)*cos(a4) - 419650*pow(cos(a2),2)*cos(a5)*sin(a3) - 419650*pow(cos(a4),2)*cos(a5)*sin(a3) + 419650*pow(cos(a3),3)*cos(a4)*sin(a5) - 3493014*pow(cos(a2),2)*pow(cos(a3),3)*cos(a4) + 412500*pow(cos(a2),2)*pow(cos(a4),2)*cos(a5) - 1716750*cos(a3)*cos(a4)*sin(a3) - 419650*cos(a3)*cos(a4)*sin(a5) + 419650*pow(cos(a2),2)*pow(cos(a4),2)*cos(a5)*sin(a3) - 839300*pow(cos(a2),2)*pow(cos(a3),3)*cos(a4)*sin(a5) + 419650*pow(cos(a3),2)*pow(cos(a4),2)*cos(a5)*sin(a3) - 419650*cos(a2)*cos(a3)*cos(a5)*sin(a2) + 1716750*cos(a2)*pow(cos(a3),2)*cos(a4)*sin(a2) + 1716750*pow(cos(a2),2)*cos(a3)*cos(a4)*sin(a3) + 419650*pow(cos(a2),2)*cos(a3)*cos(a4)*sin(a5) - 839300*cos(a2)*pow(cos(a3),3)*pow(cos(a4),2)*cos(a5)*sin(a2) - 839300*pow(cos(a2),2)*pow(cos(a3),2)*pow(cos(a4),2)*cos(a5)*sin(a3) + 839300*cos(a2)*cos(a3)*pow(cos(a4),2)*cos(a5)*sin(a2) + 3493014*cos(a2)*pow(cos(a3),2)*cos(a4)*sin(a2)*sin(a3) + 839300*cos(a2)*pow(cos(a3),2)*cos(a4)*sin(a2)*sin(a3)*sin(a5)))/(2289*cos(a3)*cos(a5)*(763*cos(a2 + a3) - 750*sin(a2))) - (v5*(1716750*pow(cos(a3),2)*cos(a4)*sin(a1) - 1716750*pow(cos(a2),2)*pow(cos(a3),2)*cos(a4)*sin(a1) - 419650*pow(cos(a3),3)*pow(cos(a4),2)*cos(a5)*sin(a1) + 1716750*cos(a1)*cos(a3)*sin(a2)*sin(a4) - 412500*cos(a2)*cos(a5)*sin(a1)*sin(a2) - 1746507*cos(a1)*cos(a2)*pow(cos(a3),2)*sin(a4) + 419650*pow(cos(a2),2)*cos(a3)*cos(a5)*sin(a1) + 419650*cos(a3)*pow(cos(a4),2)*cos(a5)*sin(a1) + 1746507*pow(cos(a3),2)*cos(a4)*sin(a1)*sin(a3) - 839300*pow(cos(a2),2)*cos(a3)*pow(cos(a4),2)*cos(a5)*sin(a1) - 3493014*pow(cos(a2),2)*pow(cos(a3),2)*cos(a4)*sin(a1)*sin(a3) + 1746507*cos(a2)*cos(a3)*cos(a4)*sin(a1)*sin(a2) + 419650*cos(a1)*cos(a4)*cos(a5)*sin(a2)*sin(a4) + 839300*pow(cos(a2),2)*pow(cos(a3),3)*pow(cos(a4),2)*cos(a5)*sin(a1) + 1746507*cos(a1)*cos(a3)*sin(a2)*sin(a3)*sin(a4) - 419650*cos(a2)*cos(a5)*sin(a1)*sin(a2)*sin(a3) + 412500*cos(a1)*cos(a3)*sin(a2)*sin(a4)*sin(a5) - 3493014*cos(a2)*pow(cos(a3),3)*cos(a4)*sin(a1)*sin(a2) + 412500*cos(a2)*pow(cos(a4),2)*cos(a5)*sin(a1)*sin(a2) - 419650*cos(a1)*cos(a2)*pow(cos(a3),2)*sin(a4)*sin(a5) + 419650*pow(cos(a3),2)*cos(a4)*sin(a1)*sin(a3)*sin(a5) + 1716750*cos(a2)*cos(a3)*cos(a4)*sin(a1)*sin(a2)*sin(a3) + 419650*cos(a2)*cos(a3)*cos(a4)*sin(a1)*sin(a2)*sin(a5) + 412500*cos(a1)*cos(a4)*cos(a5)*sin(a2)*sin(a3)*sin(a4) + 419650*cos(a1)*cos(a3)*sin(a2)*sin(a3)*sin(a4)*sin(a5) - 419650*cos(a1)*pow(cos(a3),2)*cos(a4)*cos(a5)*sin(a2)*sin(a4) + 419650*cos(a2)*pow(cos(a4),2)*cos(a5)*sin(a1)*sin(a2)*sin(a3) - 839300*cos(a2)*pow(cos(a3),3)*cos(a4)*sin(a1)*sin(a2)*sin(a5) - 839300*pow(cos(a2),2)*pow(cos(a3),2)*cos(a4)*sin(a1)*sin(a3)*sin(a5) - 839300*cos(a2)*pow(cos(a3),2)*pow(cos(a4),2)*cos(a5)*sin(a1)*sin(a2)*sin(a3) - 419650*cos(a1)*cos(a2)*cos(a3)*cos(a4)*cos(a5)*sin(a3)*sin(a4)))/(2289*cos(a3)*cos(a5)*(763*cos(a2 + a3) - 750*sin(a2))) + (10000*v3*cos(a2)*sin(a4))/(2289*cos(a3)*cos(a5)) - (v1*(7500000*cos(a1)*pow(cos(a2),2)*sin(a4) - 7500000*cos(a1)*sin(a4) - 7630000*cos(a1)*sin(a3)*sin(a4) + 7630000*cos(a2)*pow(cos(a3),2)*cos(a4)*sin(a1) + 7630000*cos(a1)*pow(cos(a2),2)*sin(a3)*sin(a4) + 7630000*cos(a1)*cos(a2)*cos(a3)*sin(a2)*sin(a4) - 7630000*cos(a3)*cos(a4)*sin(a1)*sin(a2)*sin(a3)))/(2289*cos(a3)*cos(a5)*(763*cos(a2 + a3) - 750*sin(a2))) + (v4*(1716750*cos(a1)*pow(cos(a2),2)*pow(cos(a3),2)*cos(a4) - 1716750*cos(a1)*pow(cos(a3),2)*cos(a4) + 419650*cos(a1)*pow(cos(a3),3)*pow(cos(a4),2)*cos(a5) + 412500*cos(a1)*cos(a2)*cos(a5)*sin(a2) + 1716750*cos(a3)*sin(a1)*sin(a2)*sin(a4) - 419650*cos(a1)*pow(cos(a2),2)*cos(a3)*cos(a5) - 419650*cos(a1)*cos(a3)*pow(cos(a4),2)*cos(a5) - 1746507*cos(a1)*pow(cos(a3),2)*cos(a4)*sin(a3) - 1746507*cos(a2)*pow(cos(a3),2)*sin(a1)*sin(a4) + 3493014*cos(a1)*pow(cos(a2),2)*pow(cos(a3),2)*cos(a4)*sin(a3) - 1746507*cos(a1)*cos(a2)*cos(a3)*cos(a4)*sin(a2) - 839300*cos(a1)*pow(cos(a2),2)*pow(cos(a3),3)*pow(cos(a4),2)*cos(a5) + 419650*cos(a1)*cos(a2)*cos(a5)*sin(a2)*sin(a3) + 419650*cos(a4)*cos(a5)*sin(a1)*sin(a2)*sin(a4) + 1746507*cos(a3)*sin(a1)*sin(a2)*sin(a3)*sin(a4) + 412500*cos(a3)*sin(a1)*sin(a2)*sin(a4)*sin(a5) + 3493014*cos(a1)*cos(a2)*pow(cos(a3),3)*cos(a4)*sin(a2) - 412500*cos(a1)*cos(a2)*pow(cos(a4),2)*cos(a5)*sin(a2) - 419650*cos(a1)*pow(cos(a3),2)*cos(a4)*sin(a3)*sin(a5) - 419650*cos(a2)*pow(cos(a3),2)*sin(a1)*sin(a4)*sin(a5) + 839300*cos(a1)*pow(cos(a2),2)*cos(a3)*pow(cos(a4),2)*cos(a5) - 1716750*cos(a1)*cos(a2)*cos(a3)*cos(a4)*sin(a2)*sin(a3) - 419650*cos(a1)*cos(a2)*cos(a3)*cos(a4)*sin(a2)*sin(a5) + 412500*cos(a4)*cos(a5)*sin(a1)*sin(a2)*sin(a3)*sin(a4) + 419650*cos(a3)*sin(a1)*sin(a2)*sin(a3)*sin(a4)*sin(a5) - 419650*cos(a1)*cos(a2)*pow(cos(a4),2)*cos(a5)*sin(a2)*sin(a3) + 839300*cos(a1)*cos(a2)*pow(cos(a3),3)*cos(a4)*sin(a2)*sin(a5) - 419650*pow(cos(a3),2)*cos(a4)*cos(a5)*sin(a1)*sin(a2)*sin(a4) + 839300*cos(a1)*pow(cos(a2),2)*pow(cos(a3),2)*cos(a4)*sin(a3)*sin(a5) + 839300*cos(a1)*cos(a2)*pow(cos(a3),2)*pow(cos(a4),2)*cos(a5)*sin(a2)*sin(a3) - 419650*cos(a2)*cos(a3)*cos(a4)*cos(a5)*sin(a1)*sin(a3)*sin(a4)))/(2289*cos(a3)*cos(a5)*(763*cos(a2 + a3) - 750*sin(a2))) - (v2*(7500000*pow(cos(a2),2)*sin(a1)*sin(a4) - 7500000*sin(a1)*sin(a4) - 7630000*sin(a1)*sin(a3)*sin(a4) + 7630000*pow(cos(a2),2)*sin(a1)*sin(a3)*sin(a4) - 7630000*cos(a1)*cos(a2)*pow(cos(a3),2)*cos(a4) + 7630000*cos(a1)*cos(a3)*cos(a4)*sin(a2)*sin(a3) + 7630000*cos(a2)*cos(a3)*sin(a1)*sin(a2)*sin(a4)))/(2289*cos(a3)*cos(a5)*(763*cos(a2 + a3) - 750*sin(a2)));
 
 }
-// Eigen::MatrixXd Jacobi( double theta[]) {
-//     Eigen::MatrixXd J;
-//     J << -(3*sin(theta[0])*(750*cos(theta[1] + PI/2) + 763*sin(theta[1] + theta[2] + PI/2)))/10000, - (3*cos(theta[0])*(750*sin(theta[1] + PI/2) - 763*cos(theta[1] + theta[2] + PI/2)))/10000, (2289*cos(theta[1] + theta[2] + PI/2)*cos(theta[0]))/10000, 0, 0, 0,
-//     (3*cos(theta[0])*(750*cos(theta[1] + PI/2) + 763*sin(theta[1] + theta[2] + PI/2)))/10000, -(3*sin(theta[0])*(750*sin(theta[1] + PI/2) - 763*cos(theta[1] + theta[2] + PI/2)))/10000, (2289*cos(theta[1] + theta[2] + PI/2)*sin(theta[0]))/10000, 0, 0, 0,
-//     0, (9*cos(theta[1] + PI/2))/40 + (2289*sin(theta[1] + theta[2] + PI/2))/10000, (2289*sin(theta[1] + theta[2] + PI/2))/10000, 0, 0, 0,
-//     0, sin(theta[0]), sin(theta[0]), sin(theta[1] + theta[2] + PI/2)*cos(theta[0]),   cos(theta[3])*sin(theta[0]) - sin(theta[3])*(cos(theta[1] + PI/2)*cos(theta[0])*cos(theta[2]) - sin(theta[1] + PI/2)*cos(theta[0])*sin(theta[2])), sin(theta[4] - PI/2)*(sin(theta[0])*sin(theta[3]) + cos(theta[3])*(cos(theta[1] + PI/2)*cos(theta[0])*cos(theta[2]) - sin(theta[1] + PI/2)*cos(theta[0])*sin(theta[2]))) + cos(theta[4] - PI/2)*(cos(theta[1] + PI/2)*cos(theta[0])*sin(theta[2]) + sin(theta[1] + PI/2)*cos(theta[0])*cos(theta[2])) ,
-//     0, -cos(theta[0]), -cos(theta[0]), sin(theta[1] + theta[2] + PI/2)*sin(theta[0]), - cos(theta[0])*cos(theta[3]) - sin(theta[3])*(cos(theta[1] + PI/2)*cos(theta[2])*sin(theta[0]) - sin(theta[1] + PI/2)*sin(theta[0])*sin(theta[2])), cos(theta[4] - PI/2)*(cos(theta[1] + PI/2)*sin(theta[0])*sin(theta[2]) + sin(theta[1] + PI/2)*cos(theta[2])*sin(theta[0])) - sin(theta[4] - PI/2)*(cos(theta[0])*sin(theta[3]) - cos(theta[3])*(cos(theta[1] + PI/2)*cos(theta[2])*sin(theta[0]) - sin(theta[1] + PI/2)*sin(theta[0])*sin(theta[2]))),
-//     1,  0,  0, -cos(theta[1] + theta[2] + PI/2), -sin(theta[1] + theta[2] + PI/2)*sin(theta[3]), sin(theta[4] - PI/2)*sin(theta[1] + theta[2] + PI/2)*cos(theta[3]) - cos(theta[4] - PI/2)*cos(theta[1] + theta[2] + PI/2);
-//     cout << "1" << endl;
-//     return J;
-// }
 
-// void solveTemp(double theta[],double w[],double v[]){
-//     cout << "4" <<endl; 
-//     Eigen::Matrix<double, 6,6> J;
-//     J = Jacobi(theta);
-//     Eigen::Matrix<double, 6, 1> v_vec;
-//     v_vec << v[0], 
-//     v[1],
-//     v[2],
-//     v[3],
-//     v[4], 
-//     v[5];
-//     cout << "2" << endl;
-//     Eigen::Matrix<double, 6, 1> w_vec;
-//     w_vec = J.inverse() * v_vec;
-//     for (int i = 0; i < 6; i++) {
-//         w[i] = w_vec[i];
-//     }
-// }
-
-void updateVelocity(double t,double v[]){
-    cout << "3" <<endl; 
-    
+void terminalVelocity(double t,double v[]){
     if(t < 4){
 		v[0] = sqrt(2)*0.5*0.005*t;
 		v[2] =-sqrt(2)*0.5*0.005*t;
@@ -93,7 +60,14 @@ int main(int argc, char **argv)
     ros::NodeHandle node_handle;
     ros::AsyncSpinner spinner(1);
     ROS_INFO_STREAM("start");
-    
+
+    double RUNTIME = 6.0;
+    double w[6], v[6] = {0, 0, 0, 0, 0, 0};
+    static double theta[6] = {0,0,0,0,0,0};
+
+    static double t = 0;
+    double dt = 0.01;
+
     ros::Publisher vel_pub = node_handle.advertise<std_msgs::Float64MultiArray>("/probot_anno/arm_vel_controller/command", 1000);
     ros::Rate rate(50);
     std_msgs::Float64MultiArray init_vel;
@@ -105,22 +79,16 @@ int main(int argc, char **argv)
     init_vel.data.push_back(0);
     sleep(1);
 
-    double w[6], v[6] = {0, 0, 0, 0, 0, 0};
-    static double theta[6] = {0,0,0,0,0,0};
-    static double t = 0;
-    double deltaT = 0.02;
-    int count=0;
-
-    while (t < 12)
+    while (ros::ok && t <= RUNTIME)
     {
-        cout << t << ":DO ONCE"<<  endl;
+        // cout << t << ":DO ONCE"<<  endl;
         /* code */
-        updateVelocity(t, v);
+        terminalVelocity(t, v);
 
-        solveTemp(theta, w, v);
+        planOnce(theta, w, v);
         for (int i = 0; i < 6; i++)
         {
-            theta[i] += w[i] * deltaT;
+            theta[i] += w[i] * dt;
         }
         init_vel.data.at(0) = w[0];
         init_vel.data.at(1) = w[1];
@@ -128,14 +96,46 @@ int main(int argc, char **argv)
         init_vel.data.at(3) = w[3];
         init_vel.data.at(4) = w[4];
         init_vel.data.at(5) = w[5];
-        for (int i=0; i < 6; i++){
-            cout << "\nw:" <<  w[i] << "" << endl;
-        }
-        // cout << "\nw:" <<  w[0] << "" << endl;
+        // for (int i=0; i < 6; i++){
+        //     cout << "\nw:" <<  w[i] << "" << endl;
+        // }
         vel_pub.publish(init_vel);
 
         rate.sleep();
-        t += deltaT;
+        t += dt;
     }
     ROS_INFO_STREAM("published");
 }
+
+/*
+Eigen::MatrixXd Jacobi( double theta[]) {
+    Eigen::MatrixXd J;
+    J << -(3*sin(theta[0])*(750*cos(theta[1] + PI/2) + 763*sin(theta[1] + theta[2] + PI/2)))/10000, - (3*cos(theta[0])*(750*sin(theta[1] + PI/2) - 763*cos(theta[1] + theta[2] + PI/2)))/10000, (2289*cos(theta[1] + theta[2] + PI/2)*cos(theta[0]))/10000, 0, 0, 0,
+    (3*cos(theta[0])*(750*cos(theta[1] + PI/2) + 763*sin(theta[1] + theta[2] + PI/2)))/10000, -(3*sin(theta[0])*(750*sin(theta[1] + PI/2) - 763*cos(theta[1] + theta[2] + PI/2)))/10000, (2289*cos(theta[1] + theta[2] + PI/2)*sin(theta[0]))/10000, 0, 0, 0,
+    0, (9*cos(theta[1] + PI/2))/40 + (2289*sin(theta[1] + theta[2] + PI/2))/10000, (2289*sin(theta[1] + theta[2] + PI/2))/10000, 0, 0, 0,
+    0, sin(theta[0]), sin(theta[0]), sin(theta[1] + theta[2] + PI/2)*cos(theta[0]),   cos(theta[3])*sin(theta[0]) - sin(theta[3])*(cos(theta[1] + PI/2)*cos(theta[0])*cos(theta[2]) - sin(theta[1] + PI/2)*cos(theta[0])*sin(theta[2])), sin(theta[4] - PI/2)*(sin(theta[0])*sin(theta[3]) + cos(theta[3])*(cos(theta[1] + PI/2)*cos(theta[0])*cos(theta[2]) - sin(theta[1] + PI/2)*cos(theta[0])*sin(theta[2]))) + cos(theta[4] - PI/2)*(cos(theta[1] + PI/2)*cos(theta[0])*sin(theta[2]) + sin(theta[1] + PI/2)*cos(theta[0])*cos(theta[2])) ,
+    0, -cos(theta[0]), -cos(theta[0]), sin(theta[1] + theta[2] + PI/2)*sin(theta[0]), - cos(theta[0])*cos(theta[3]) - sin(theta[3])*(cos(theta[1] + PI/2)*cos(theta[2])*sin(theta[0]) - sin(theta[1] + PI/2)*sin(theta[0])*sin(theta[2])), cos(theta[4] - PI/2)*(cos(theta[1] + PI/2)*sin(theta[0])*sin(theta[2]) + sin(theta[1] + PI/2)*cos(theta[2])*sin(theta[0])) - sin(theta[4] - PI/2)*(cos(theta[0])*sin(theta[3]) - cos(theta[3])*(cos(theta[1] + PI/2)*cos(theta[2])*sin(theta[0]) - sin(theta[1] + PI/2)*sin(theta[0])*sin(theta[2]))),
+    1,  0,  0, -cos(theta[1] + theta[2] + PI/2), -sin(theta[1] + theta[2] + PI/2)*sin(theta[3]), sin(theta[4] - PI/2)*sin(theta[1] + theta[2] + PI/2)*cos(theta[3]) - cos(theta[4] - PI/2)*cos(theta[1] + theta[2] + PI/2);
+    cout << "1" << endl;
+    return J;
+}
+
+void solveTemp(double theta[],double w[],double v[]){
+    cout << "4" <<endl; 
+    Eigen::Matrix<double, 6,6> J;
+    J = Jacobi(theta);
+    Eigen::Matrix<double, 6, 1> v_vec;
+    v_vec << v[0], 
+    v[1],
+    v[2],
+    v[3],
+    v[4], 
+    v[5];
+    cout << "2" << endl;
+    Eigen::Matrix<double, 6, 1> w_vec;
+    w_vec = J.inverse() * v_vec;
+    for (int i = 0; i < 6; i++) {
+        w[i] = w_vec[i];
+    }
+}
+*/
